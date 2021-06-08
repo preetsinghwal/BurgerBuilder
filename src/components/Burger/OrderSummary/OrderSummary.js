@@ -1,32 +1,39 @@
-import React from 'react';
-import Auxillary from '../../../hoc/Auxillary';
+import React, { Component } from 'react';
+import Auxillary from '../../../hoc/Auxillary/Auxillary';
 import Button from '../../UI/Button/Button';
 
 
-const orderSummary = (props) =>{
-    const ingredientSummary = Object.keys(props.ingredients)
+class OrderSummary extends Component {
+
+    //This could be a functional compnent, does not have to be a class
+
+    componentDidUpdate(){
+       console.log('[OderSummary Update]');
+    }
+    render(){
+        const ingredientSummary = Object.keys(this.props.ingredients)
     .map(igkey =>{
         return( <li key ={igkey}> 
                 <span style = {{textTransform : 'capitalize'}}>{igkey}</span> 
-                : {props.ingredients[igkey]}
+                : {this.props.ingredients[igkey]}
                </li>
         )
-    });  
-    return(
-        <Auxillary>
+    });
+        return(
+            <Auxillary>
             <h3>Your Order</h3>
             <p>A delicious burger with the following ingredients :</p>
             <ul>
                {ingredientSummary}
             </ul>
-            <p><strong>Total Price : {props.price.toFixed(2)}</strong></p>
+            <p><strong>Total Price : {this.props.price.toFixed(2)}</strong></p>
             <p>Continue to Checkout ?</p>
-            <Button btnType = "Danger" clicked = {props.purchaseCancelled}>CANCEL</Button>
-            <Button btnType = "Success" clicked ={props.purchaseContinued}>CONTINUE</Button>
+            <Button btnType = "Danger" clicked = {this.props.purchaseCancelled}>CANCEL</Button>
+            <Button btnType = "Success" clicked ={this.props.purchaseContinued}>CONTINUE</Button>
         
         </Auxillary>
+        );
+    }
+} 
 
-    );
-};
-
-export default orderSummary;
+export default OrderSummary;
