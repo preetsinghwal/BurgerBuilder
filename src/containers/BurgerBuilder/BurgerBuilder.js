@@ -16,9 +16,6 @@ const INGREDIENT_PRICES = {
 };
 
 class BurgerBuilder extends Component {
-
- 
-
   /* OLD METHOD OF DEFINING STATE */
 
   // constructor(props){
@@ -34,18 +31,18 @@ class BurgerBuilder extends Component {
     purchasable: false,
     purchasing: false,
     loading: false,
-    error: false
+    error: false,
   };
 
   componentDidMount() {
-    console.log("BurgerBulder",this.props)
+    console.log("BurgerBulder", this.props);
     axios
       .get("https://burger-d2b37-default-rtdb.firebaseio.com/ingredients.json")
       .then((response) => {
         this.setState({ ingredients: response.data });
       })
-      .catch(error => {
-        this.setState({error:true})
+      .catch((error) => {
+        this.setState({ error: true });
       });
   }
 
@@ -108,33 +105,25 @@ class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     //alert('You Continue);
-    // this.setState({ loading: true });
-    // const order = {
-    //   ingredients: this.state.ingredients,
-    //   price: this.state.totalPrice,
-    //   customer: {
-    //     name: "Preet Singhwal",
-    //     address: {
-    //       street: "teststreet",
-    //       zipCode: "33564",
-    //       country: "India",
-    //     },
-    //     email: "test@test.com",
-    //   },
-    //   deliveryMethod: "fastest",
-    // };
-    // axios
-    //   .post("/orders.json", order)
-    //   .then((response) => {
-    //     this.setState({ loading: false, purchasing: false });
-    //     console.log("response", response);
-    //   })
 
-    //   .catch((error) => {
-    //     this.setState({ loading: false, purchasing: false });
-    //     console.log("error", error);
-    //   });
-    this.props.history.push('/checkout')
+    const queryParam = [];
+    for (let i in this.state.ingredients) {
+      // Here we are setting ket value pair
+      queryParam.push(
+        encodeURIComponent(i) +
+          "=" +
+          encodeURIComponent(this.state.ingredients[i])
+      );
+    }
+
+    queryParam.push("price=" + this.state.totalPrice);
+
+    const queryString = queryParam.join("&");
+
+    this.props.history.push({
+      pathname: "/checkout",
+      search: "?" + queryString,
+    });
   };
 
   render() {
@@ -147,9 +136,11 @@ class BurgerBuilder extends Component {
 
     let orderSummary = null;
 
-    
-
-    let burger = this.state.error ? <p>Ingredient's can't be loaded</p> : <Spinner />;
+    let burger = this.state.error ? (
+      <p>Ingredient's can't be loaded</p>
+    ) : (
+      <Spinner />
+    );
 
     if (this.state.ingredients) {
       burger = (
